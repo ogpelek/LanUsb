@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="pl" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LanUsb — Darmowe USB przez LAN do Streamowania (VirtualHere Alternative)</title>
+  <meta name="description" content="100% darmowa aplikacja do przesyłania urządzeń USB przez sieć lokalną (LAN) w układzie Serwer + Klient. Idealna do konfiguracji dwóch PC (Streaming + Gaming).">
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              darkest: '#090D16',
+              dark: '#0F172A',
+              card: '#162032',
+              cardHover: '#1E2C44',
+              border: '#273852',
+              green: '#10B981',
+              greenDark: '#059669',
+              blue: '#3B82F6',
+              blueDark: '#2563EB',
+              amber: '#F59E0B',
+              rose: '#EF4444'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Glow and glassmorphism accents */
+    .glow-green {
+      box-shadow: 0 0 35px -5px rgba(16, 185, 129, 0.3);
+    }
+    .glow-blue {
+      box-shadow: 0 0 35px -5px rgba(59, 130, 246, 0.3);
+    }
+    .gradient-text-green {
+      background: linear-gradient(135deg, #34D399 0%, #10B981 50%, #059669 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .gradient-text-blue {
+      background: linear-gradient(135deg, #60A5FA 0%, #3B82F6 50%, #2563EB 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  </style>
+</head>
+<body class="bg-brand-darkest text-slate-100 font-sans antialiased selection:bg-emerald-500 selection:text-white">
+
+  <!-- NAVBAR -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-brand-darkest/90 border-b border-brand-border/60">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+      <!-- Logo -->
+      <a href="#" class="flex items-center gap-3 group shrink-0 whitespace-nowrap">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-blue-500 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-emerald-500/20 group-hover:scale-105 transition-transform shrink-0">
+          ⚡
+        </div>
+        <div>
+          <span class="text-xl font-bold tracking-tight text-white flex items-center gap-2 leading-none">
+            LanUsb
+            <span class="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/25">v1.0 Free</span>
+          </span>
+          <span class="text-xs text-slate-400 block mt-1">USB przez LAN dla Streamerów</span>
+        </div>
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden xl:flex items-center gap-6 text-sm font-medium text-slate-300 whitespace-nowrap">
+        <a href="#network-requirement" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-semibold transition-colors">
+          <span>⚠️</span> Sieć prywatna
+        </a>
+        <a href="#streamers" class="hover:text-emerald-400 transition-colors">Dla Streamerów</a>
+        <a href="#comparison" class="hover:text-emerald-400 transition-colors">Porównanie</a>
+        <a href="#how-it-works" class="hover:text-emerald-400 transition-colors">Jak to działa</a>
+        <a href="#faq" class="hover:text-emerald-400 transition-colors">FAQ</a>
+      </nav>
+
+      <!-- Right Action Buttons -->
+      <div class="flex items-center gap-3 shrink-0 whitespace-nowrap">
+        <a href="#donate" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 transition-all hover:scale-105 whitespace-nowrap shrink-0">
+          <span>☕</span> <span>Wesprzyj autora</span>
+        </a>
+        <a href="#download" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-lg shadow-emerald-500/20 transition-all hover:scale-105 whitespace-nowrap shrink-0">
+          <span>⬇️</span> <span>Pobierz za darmo</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- IMPORTANT NETWORK NOTICE BANNER (TOP) -->
+  <aside id="network-requirement" class="bg-gradient-to-r from-amber-950/70 via-brand-card to-amber-950/70 border-b border-amber-500/30 py-3.5 px-4 text-xs sm:text-sm">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3 text-amber-200">
+      <div class="flex items-center gap-3 text-center md:text-left">
+        <span class="text-2xl animate-pulse">⚠️</span>
+        <p>
+          <strong class="text-amber-300 font-bold">Kluczowy warunek działania:</strong>
+          Twoja sieć w systemie Windows (Wi-Fi lub Ethernet) <strong class="underline decoration-amber-400 underline-offset-2">musi być ustawiona jako PRYWATNA (Private)</strong>. W sieci publicznej zapora Windows blokuje ruch LAN. Wystarczy przełączyć na prywatną i LanUsb natychmiast zadziała!
+        </p>
+      </div>
+      <div class="flex items-center gap-2 shrink-0">
+        <a href="#private-network-guide" class="px-3 py-1.5 rounded-md bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition-colors">
+          Zobacz jak ustawić (10 sek)
+        </a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- HERO SECTION -->
+  <section class="relative pt-20 pb-28 overflow-hidden">
+    <!-- Glow Background Gradients -->
+    <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-emerald-500/10 blur-[140px] pointer-events-none rounded-full"></div>
+    <div class="absolute top-1/3 left-1/3 w-[500px] h-[300px] bg-blue-500/10 blur-[130px] pointer-events-none rounded-full"></div>
+
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-800/80 border border-brand-border text-xs text-slate-300 mb-6">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+        <span>Bez licencji • Bez opłat • Nielimitowane urządzenia USB</span>
+      </div>
+
+      <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white leading-[1.12]">
+        Przesyłaj USB przez LAN <br class="hidden sm:block">
+        <span class="gradient-text-green">za darmo i bez limitów.</span>
+      </h1>
+
+      <p class="mt-6 text-lg sm:text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed">
+        Darmowa, otwarta alternatywa dla <span class="text-white font-semibold">VirtualHere</span> stworzona z myślą o konfiguracji z dwoma komputerami (Dual PC Streaming & Gaming). Podłącz <strong class="text-emerald-400">Stream Deck</strong>, <strong class="text-blue-400">kamerę 4K</strong>, mikrofon studyjny lub kierownicę przez sieć lokalną z zerowym opóźnieniem.
+      </p>
+
+      <!-- CTA Buttons -->
+      <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
+        <a href="#download" class="px-8 py-4 rounded-xl text-base font-bold bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-xl shadow-emerald-500/25 transition-all hover:scale-105 flex items-center gap-3">
+          <span class="text-xl">⬇️</span> Pobierz pakiet LanUsb (v1.0 Free)
+        </a>
+        <a href="#donate" class="px-8 py-4 rounded-xl text-base font-semibold bg-brand-card hover:bg-brand-cardHover text-white border border-brand-border transition-all hover:border-amber-500/50 flex items-center gap-3">
+          <span class="text-xl">☕</span> Wesprzyj autora (Dobrowolnie)
+        </a>
+      </div>
+
+      <!-- Trust Badges -->
+      <div class="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-4 text-left max-w-3xl mx-auto pt-8 border-t border-brand-border/60">
+        <div class="flex items-center gap-3">
+          <div class="text-2xl">🆓</div>
+          <div>
+            <div class="text-sm font-bold text-white">100% Za Darmo</div>
+            <div class="text-xs text-slate-400">Licencja Open Source MIT</div>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="text-2xl">♾️</div>
+          <div>
+            <div class="text-sm font-bold text-white">Bez limitu USB</div>
+            <div class="text-xs text-slate-400">Podłącz tyle portów ile chcesz</div>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="text-2xl">⚡</div>
+          <div>
+            <div class="text-sm font-bold text-white">Auto-Connect</div>
+            <div class="text-xs text-slate-400">Samoczynne ponowne łączenie</div>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="text-2xl">🛡️</div>
+          <div>
+            <div class="text-sm font-bold text-white">Podpisane sterowniki</div>
+            <div class="text-xs text-slate-400">Zgodność z Windows 10/11</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPARISON TABLE: LanUsb vs VirtualHere -->
+  <section id="comparison" class="py-20 bg-brand-dark/50 border-y border-brand-border/60">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-14">
+        <h2 class="text-xs font-bold uppercase tracking-wider text-emerald-400">Dlaczego warto wybrać LanUsb?</h2>
+        <h3 class="text-3xl sm:text-4xl font-extrabold text-white mt-2">Porównanie z VirtualHere</h3>
+        <p class="text-sm sm:text-base text-slate-300 mt-3">VirtualHere to świetne narzędzie, ale darmowa wersja jest mocno ograniczona, a pełna licencja kosztuje spore pieniądze.</p>
+      </div>
+
+      <div class="overflow-hidden rounded-2xl border border-brand-border bg-brand-card shadow-2xl">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="border-b border-brand-border bg-slate-900/60 text-xs uppercase tracking-wider text-slate-400">
+              <th class="py-4 px-6 font-semibold">Funkcja / Możliwość</th>
+              <th class="py-4 px-6 font-bold text-emerald-400 text-sm">⚡ LanUsb (Nasza aplikacja)</th>
+              <th class="py-4 px-6 font-semibold text-slate-400">VirtualHere</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-brand-border text-sm">
+            <tr class="hover:bg-slate-800/40 transition-colors">
+              <td class="py-4 px-6 font-medium text-white">Cena licencji</td>
+              <td class="py-4 px-6 font-bold text-emerald-400">100% Za Darmo (0 zł)</td>
+              <td class="py-4 px-6 text-rose-400 font-semibold">Płatna (~$49 USD za serwer)</td>
+            </tr>
+            <tr class="hover:bg-slate-800/40 transition-colors">
+              <td class="py-4 px-6 font-medium text-white">Limit urządzeń USB w wersji darmowej</td>
+              <td class="py-4 px-6 font-bold text-emerald-400">BEZ LIMITU (Dowolna ilość)</td>
+              <td class="py-4 px-6 text-amber-400">Tylko 1 urządzenie jednocześnie</td>
+            </tr>
+            <tr class="hover:bg-slate-800/40 transition-colors">
+              <td class="py-4 px-6 font-medium text-white">Automatyczne wykrywanie w LAN</td>
+              <td class="py-4 px-6 text-emerald-400 font-semibold">✓ Tak (Broadcast UDP 32400)</td>
+              <td class="py-4 px-6 text-slate-300">✓ Tak</td>
+            </tr>
+            <tr class="hover:bg-slate-800/40 transition-colors">
+              <td class="py-4 px-6 font-medium text-white">Wbudowany asystent pobierania sterowników</td>
+              <td class="py-4 px-6 text-emerald-400 font-semibold">✓ 1-klik w programie (Direct GitHub)</td>
+              <td class="py-4 px-6 text-slate-400">Wymaga ręcznej instalacji</td>
+            </tr>
+            <tr class="hover:bg-slate-800/40 transition-colors">
+              <td class="py-4 px-6 font-medium text-white">Funkcja Auto-Connect (Auto-łącz po restarcie)</td>
+              <td class="py-4 px-6 text-emerald-400 font-semibold">✓ Wbudowane za darmo</td>
+              <td class="py-4 px-6 text-slate-400">Wymaga licencji komercyjnej</td>
+            </tr>
+            <tr class="hover:bg-slate-800/40 transition-colors">
+              <td class="py-4 px-6 font-medium text-white">Specjalne kategoryzowanie sprzętu streamerskiego</td>
+              <td class="py-4 px-6 text-emerald-400 font-semibold">✓ Stream Deck, Kamery 4K, Audio, Pady</td>
+              <td class="py-4 px-6 text-slate-400">Zwykłe drzewo urządzeń</td>
+            </tr>
+            <tr class="hover:bg-slate-800/40 transition-colors">
+              <td class="py-4 px-6 font-medium text-white">Kod źródłowy (Open Source)</td>
+              <td class="py-4 px-6 text-emerald-400 font-semibold">✓ Otwarty kod C# / .NET 8 (GitHub)</td>
+              <td class="py-4 px-6 text-slate-400">Zamknięty (Proprietary)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- TARGET AUDIENCE: DLA STREAMERÓW I GRACZY -->
+  <section id="streamers" class="py-24">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <h2 class="text-xs font-bold uppercase tracking-wider text-blue-400">Zastosowanie</h2>
+        <h3 class="text-3xl sm:text-4xl font-extrabold text-white mt-2">Stworzone specjalnie dla Streamerów</h3>
+        <p class="text-sm sm:text-base text-slate-300 mt-3">Masz PC do gier i osobny PC do kodowania streamu w OBS? LanUsb rozwiązuje problem przepinania kabli raz na zawsze.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Card 1 -->
+        <div class="p-8 rounded-2xl bg-brand-card border border-brand-border hover:border-emerald-500/40 transition-all hover:-translate-y-1">
+          <div class="w-14 h-14 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center text-3xl mb-6">
+            🎛️
+          </div>
+          <h4 class="text-xl font-bold text-white">Elgato Stream Deck</h4>
+          <p class="text-sm text-slate-300 mt-3 leading-relaxed">
+            Podłącz Stream Deck MK.2, XL, Mini lub pedały do swojego komputera gamingowego, a oprogramowanie Elgato i OBS na komputerze streamingowym wykryją go tak, jakby był wpięty bezpośrednio w płytę główną!
+          </p>
+          <div class="mt-4 text-xs font-semibold text-emerald-400 flex items-center gap-1">
+            ✓ Natychmiastowa reakcja przycisków
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="p-8 rounded-2xl bg-brand-card border border-brand-border hover:border-blue-500/40 transition-all hover:-translate-y-1">
+          <div class="w-14 h-14 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center text-3xl mb-6">
+            📷
+          </div>
+          <h4 class="text-xl font-bold text-white">Kamery 4K & Webcamy</h4>
+          <p class="text-sm text-slate-300 mt-3 leading-relaxed">
+            Przesyłaj nieskompresowany obraz z kamer USB (UGREEN 4K, Logitech C920, Brio, Cam Link) prosto do OBS Studio na drugim PC. Zero utraty klatek przy połączeniu gigabitowym.
+          </p>
+          <div class="mt-4 text-xs font-semibold text-blue-400 flex items-center gap-1">
+            ✓ Pełna rozdzielczość i 60 FPS
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="p-8 rounded-2xl bg-brand-card border border-brand-border hover:border-amber-500/40 transition-all hover:-translate-y-1">
+          <div class="w-14 h-14 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center text-3xl mb-6">
+            🎙️
+          </div>
+          <h4 class="text-xl font-bold text-white">Mikrofony & Karty Audio</h4>
+          <p class="text-sm text-slate-300 mt-3 leading-relaxed">
+            Interfejsy Focusrite Scarlett, mikrofony Shure MV7, Rode, Blue Yeti czy bezprzewodowe SteelSeries Arctis Nova działają w pełnej jakości studyjnej (24-bit / 48kHz/96kHz).
+          </p>
+          <div class="mt-4 text-xs font-semibold text-amber-400 flex items-center gap-1">
+            ✓ Krystaliczny dźwięk bez zakłóceń
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DETAILED GUIDE: PRIVATE NETWORK (SIEC PRYWATNA) -->
+  <section id="private-network-guide" class="py-20 bg-brand-dark/40 border-y border-brand-border/60">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="rounded-2xl border-2 border-amber-500/40 bg-gradient-to-b from-brand-card to-slate-900 p-8 sm:p-10 shadow-2xl relative">
+        <div class="flex items-center gap-3 text-amber-400 font-bold text-xs uppercase tracking-wider">
+          <span class="text-xl">🛡️</span> Ważne wymaganie systemowe
+        </div>
+        <h3 class="text-2xl sm:text-3xl font-extrabold text-white mt-2">
+          Dlaczego sieć musi być ustawiona jako „Prywatna”?
+        </h3>
+        <p class="text-slate-300 text-sm sm:text-base mt-4 leading-relaxed">
+          Gdy podłączasz kabel LAN lub łączysz się z Wi-Fi, system Windows domyślnie oznacza nową sieć jako <strong>Publiczną (Public)</strong>. W tym trybie Zapora Windows (Windows Firewall) <em>całkowicie odcina</em> komputer od innych urządzeń w mieszkaniu — blokuje wykrywanie pakietów UDP oraz protokół USB/IP.
+        </p>
+
+        <div class="mt-6 p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-200 text-sm">
+          <strong>Po przełączeniu na profil Prywatny (Private):</strong> Zapora Windows pozwala obu komputerom komunikować się ze sobą wewnątrz Twojego routera, a aplikacje LanUsb.Server i LanUsb.Client natychmiast się odnajdują!
+        </div>
+
+        <h4 class="text-lg font-bold text-white mt-8 mb-4">Jak przestawić sieć na Prywatną (2 proste sposoby):</h4>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="p-5 rounded-xl bg-slate-900/80 border border-brand-border">
+            <div class="text-emerald-400 font-bold text-sm mb-2">Sposób 1: W programie LanUsb (1 klik)</div>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Wystarczy kliknąć przycisk <span class="text-white font-semibold">„⚡ Zmień na Prywatną”</span> lub <span class="text-white font-semibold">„🌐 Ustawienia sieci”</span> bezpośrednio na górnym pasku aplikacji LanUsb.Server lub LanUsb.Client!
+            </p>
+          </div>
+
+          <div class="p-5 rounded-xl bg-slate-900/80 border border-brand-border">
+            <div class="text-blue-400 font-bold text-sm mb-2">Sposób 2: Ręcznie w ustawieniach Windows</div>
+            <ol class="text-xs text-slate-300 list-decimal list-inside space-y-1.5 leading-relaxed">
+              <li>Otwórz <strong class="text-white">Ustawienia Windows</strong> &rarr; <strong class="text-white">Sieć i Internet</strong>.</li>
+              <li>Kliknij swoje połączenie (<strong class="text-white">Ethernet</strong> lub <strong class="text-white">Wi-Fi</strong>).</li>
+              <li>W sekcji *Typ profilu sieci* zaznacz: <strong class="text-emerald-300">Sieć prywatna</strong>.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS STEP BY STEP -->
+  <section id="how-it-works" class="py-24">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <h2 class="text-xs font-bold uppercase tracking-wider text-emerald-400">Architektura</h2>
+        <h3 class="text-3xl sm:text-4xl font-extrabold text-white mt-2">Jak działa LanUsb w 3 krokach</h3>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+        <!-- Step 1 -->
+        <div class="p-6 rounded-2xl bg-brand-card border border-brand-border text-center relative">
+          <div class="w-12 h-12 mx-auto rounded-full bg-emerald-500/10 text-emerald-400 font-black text-xl flex items-center justify-center mb-4 border border-emerald-500/30">
+            1
+          </div>
+          <h4 class="text-lg font-bold text-white">Komputer z USB (Serwer)</h4>
+          <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+            Uruchamiasz <span class="text-emerald-300 font-semibold">LanUsb.Server.exe</span>. Program wykrywa urządzenia (np. Stream Deck, Cam) i pozwala jednym kliknięciem kliknąć <strong>Udostępnij (Bind)</strong>.
+          </p>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="p-6 rounded-2xl bg-brand-card border border-brand-border text-center relative">
+          <div class="w-12 h-12 mx-auto rounded-full bg-blue-500/10 text-blue-400 font-black text-xl flex items-center justify-center mb-4 border border-blue-500/30">
+            2
+          </div>
+          <h4 class="text-lg font-bold text-white">Komputer do streamu (Klient)</h4>
+          <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+            Uruchamiasz <span class="text-blue-300 font-semibold">LanUsb.Client.exe</span>. W 2 sekundy serwer pojawi się samoczynnie. Klikasz <strong>Podłącz (Attach)</strong> lub włączasz <strong>Auto-łącz</strong>.
+          </p>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="p-6 rounded-2xl bg-brand-card border border-brand-border text-center relative">
+          <div class="w-12 h-12 mx-auto rounded-full bg-indigo-500/10 text-indigo-400 font-black text-xl flex items-center justify-center mb-4 border border-indigo-500/30">
+            3
+          </div>
+          <h4 class="text-lg font-bold text-white">Wirtualne USB w Windows</h4>
+          <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+            Sterownik montuje wirtualny kontroler USB. OBS Studio, Discord, Elgato Software i gry widzą urządzenie tak, jakby było fizycznie wpięte kablem!
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DOWNLOAD HUB (BEZ PŁACENIA / 100% FREE) -->
+  <section id="download" class="py-24 bg-brand-dark/60 border-t border-brand-border/60">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <h2 class="text-xs font-bold uppercase tracking-wider text-emerald-400">Pobieranie za darmo</h2>
+        <h3 class="text-3xl sm:text-4xl font-extrabold text-white mt-2">Pobierz aplikację LanUsb</h3>
+        <p class="text-sm sm:text-base text-slate-300 mt-3">Wszystkie pliki są w 100% darmowe, bez rejestracji, bez licencji i bez ograniczeń czasowych.</p>
+      </div>
+
+      <!-- Main Bundle Card -->
+      <div class="max-w-4xl mx-auto mb-10 p-8 sm:p-10 rounded-2xl bg-gradient-to-tr from-brand-card via-slate-900 to-emerald-950/40 border-2 border-emerald-500/50 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-6 glow-green">
+        <div>
+          <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-emerald-500/20 text-emerald-300 text-xs font-bold mb-3">
+            ⭐ REKOMENDOWANY PAKIET
+          </div>
+          <h4 class="text-2xl sm:text-3xl font-extrabold text-white">LanUsb Complete Suite (v1.0 Free)</h4>
+          <p class="text-sm text-slate-300 mt-2 max-w-xl leading-relaxed">
+            Kompletne archiwum ZIP zawierające obie wersje: <strong>LanUsb.Server</strong> (na komputer z USB), <strong>LanUsb.Client</strong> (na komputer do streamowania), skrypty zapory i instalatory sterowników.
+          </p>
+          <div class="mt-4 flex flex-wrap gap-2 text-xs text-slate-400">
+            <span>Rozmiar: ~226 KB</span> • <span>Dla Windows 10 & 11 (64-bit)</span> • <span>.NET 8</span>
+          </div>
+        </div>
+
+        <a href="downloads/LanUsb-Complete-v1.0.zip" download class="px-8 py-4 rounded-xl text-base font-extrabold bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-xl shadow-emerald-500/30 transition-all hover:scale-105 shrink-0 flex items-center gap-2">
+          <span>📦</span> Pobierz ZIP (Pełny pakiet)
+        </a>
+      </div>
+
+      <!-- Individual Files Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
+        <!-- Server EXE -->
+        <div class="p-6 rounded-xl bg-brand-card border border-brand-border flex flex-col justify-between">
+          <div>
+            <div class="text-2xl mb-2">🖥️</div>
+            <h5 class="text-base font-bold text-white">LanUsb.Server.exe</h5>
+            <p class="text-xs text-slate-400 mt-1">Aplikacja serwera dla PC, do którego podłączasz fizyczne urządzenia USB.</p>
+          </div>
+          <a href="downloads/LanUsb.Server.exe" download class="mt-6 w-full py-2.5 rounded-lg text-xs font-bold bg-slate-800 hover:bg-slate-700 text-white border border-brand-border text-center transition-colors">
+            Pobierz Serwer (.exe)
+          </a>
+        </div>
+
+        <!-- Client EXE -->
+        <div class="p-6 rounded-xl bg-brand-card border border-brand-border flex flex-col justify-between">
+          <div>
+            <div class="text-2xl mb-2">💻</div>
+            <h5 class="text-base font-bold text-white">LanUsb.Client.exe</h5>
+            <p class="text-xs text-slate-400 mt-1">Aplikacja klienta dla drugiego PC (odbiornik do OBS Studio / streamingu).</p>
+          </div>
+          <a href="downloads/LanUsb.Client.exe" download class="mt-6 w-full py-2.5 rounded-lg text-xs font-bold bg-slate-800 hover:bg-slate-700 text-white border border-brand-border text-center transition-colors">
+            Pobierz Klienta (.exe)
+          </a>
+        </div>
+
+        <!-- Firewall Script -->
+        <div class="p-6 rounded-xl bg-brand-card border border-brand-border flex flex-col justify-between">
+          <div>
+            <div class="text-2xl mb-2">🛡️</div>
+            <h5 class="text-base font-bold text-white">Otworz-Porty-Firewall.bat</h5>
+            <p class="text-xs text-slate-400 mt-1">1 kliknięciem automatycznie dodaje reguły w Zaporze Windows (3240, 32400, 32401).</p>
+          </div>
+          <a href="downloads/Otworz-Porty-Firewall.bat" download class="mt-6 w-full py-2.5 rounded-lg text-xs font-bold bg-slate-800 hover:bg-slate-700 text-white border border-brand-border text-center transition-colors">
+            Pobierz Skrypt Zapory
+          </a>
+        </div>
+
+        <!-- Driver Script -->
+        <div class="p-6 rounded-xl bg-brand-card border border-brand-border flex flex-col justify-between">
+          <div>
+            <div class="text-2xl mb-2">⚙️</div>
+            <h5 class="text-base font-bold text-white">Pobierz-Sterownik.bat</h5>
+            <p class="text-xs text-slate-400 mt-1">Zapasowy skrypt do pobrania i instalacji sterownika klienta usbip-win2.</p>
+          </div>
+          <a href="downloads/Pobierz-Sterownik-Klienta.bat" download class="mt-6 w-full py-2.5 rounded-lg text-xs font-bold bg-slate-800 hover:bg-slate-700 text-white border border-brand-border text-center transition-colors">
+            Pobierz Instalator Sterownika
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DONATION & SUPPORT AUTHOR SECTION -->
+  <section id="donate" class="py-24 relative overflow-hidden">
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-amber-500/10 blur-[130px] pointer-events-none rounded-full"></div>
+
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-xs font-semibold text-amber-300 mb-6">
+        <span>❤️</span> Opcjonalne wsparcie twórcy
+      </div>
+
+      <h3 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
+        Postaw kawę i wesprzyj rozwój LanUsb
+      </h3>
+
+      <p class="mt-6 text-base sm:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed">
+        Aplikacja LanUsb jest i <strong class="text-white font-bold">zawsze pozostanie darmowa</strong> — bez reklam, bez licencji i bez blokowania funkcji. Jeśli program zaoszczędził Ci wydatku na płatną licencję VirtualHere (~200 zł) lub ułatwił codzienne streamowanie, możesz dobrowolnie podziękować autorowi!
+      </p>
+
+      <div class="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-6 text-left">
+        <!-- Support Option 1: BuyCoffee -->
+        <div class="p-6 rounded-2xl bg-brand-card border border-brand-border hover:border-amber-500/40 transition-all flex flex-col justify-between">
+          <div>
+            <div class="text-3xl mb-3">☕</div>
+            <h4 class="text-lg font-bold text-white">Postaw Kawę (BuyCoffee)</h4>
+            <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+              Błyskawiczne wsparcie przez profil <strong class="text-amber-400">buycoffee.to/pelek2g</strong>. Obsługa BLIK, Apple Pay, Google Pay, karty i szybkich przelewów online.
+            </p>
+          </div>
+          <a href="https://buycoffee.to/pelek2g" target="_blank" rel="noopener" class="mt-6 w-full py-3 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 text-center transition-transform hover:scale-105 block shadow-lg shadow-amber-500/20">
+            ☕ Postaw kawę (buycoffee.to/pelek2g)
+          </a>
+        </div>
+
+        <!-- Support Option 2: PayPal -->
+        <div class="p-6 rounded-2xl bg-brand-card border border-brand-border hover:border-blue-500/40 transition-all flex flex-col justify-between">
+          <div>
+            <div class="text-3xl mb-3">💳</div>
+            <h4 class="text-lg font-bold text-white">PayPal</h4>
+            <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+              Bezpośrednia wpłata lub darowizna przez system PayPal na adres: <strong class="text-blue-400 select-all">szefkacperek@gmail.com</strong>.
+            </p>
+          </div>
+          <div class="mt-6 space-y-2">
+            <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=szefkacperek@gmail.com&currency_code=PLN" target="_blank" rel="noopener" class="w-full py-2.5 rounded-xl text-xs font-bold bg-blue-500 hover:bg-blue-400 text-white text-center transition-transform hover:scale-105 block shadow-lg shadow-blue-500/20">
+              Przekaż przez PayPal
+            </a>
+            <button onclick="copyPaypal()" class="w-full py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-blue-300 border border-blue-500/30 text-center transition-colors flex items-center justify-center gap-1.5">
+              <span>📋</span> Kopiuj e-mail: szefkacperek@gmail.com
+            </button>
+          </div>
+        </div>
+
+        <!-- Support Option 3: GitHub & Share -->
+        <div class="p-6 rounded-2xl bg-brand-card border border-brand-border hover:border-emerald-500/40 transition-all flex flex-col justify-between">
+          <div>
+            <div class="text-3xl mb-3">⭐</div>
+            <h4 class="text-lg font-bold text-white">Darmowe wsparcie</h4>
+            <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+              Nie masz budżetu? Żaden problem! Zostaw gwiazdkę na GitHubie lub poleć LanUsb znajomym streamerom i na grupach Discord.
+            </p>
+          </div>
+          <button onclick="copyShareLink()" class="mt-6 w-full py-3 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-emerald-500/30 text-center transition-colors">
+            📋 Skopiuj link do polecenia
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ SECTION -->
+  <section id="faq" class="py-20 bg-brand-dark/40 border-t border-brand-border/60">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-14">
+        <h2 class="text-xs font-bold uppercase tracking-wider text-emerald-400">FAQ</h2>
+        <h3 class="text-3xl font-extrabold text-white mt-2">Często zadawane pytania</h3>
+      </div>
+
+      <div class="space-y-4">
+        <!-- Q1 -->
+        <details class="group p-6 rounded-xl bg-brand-card border border-brand-border open:border-emerald-500/40 transition-colors">
+          <summary class="font-bold text-white cursor-pointer list-none flex items-center justify-between">
+            <span>Czy ta aplikacja jest całkowicie darmowa i legalna?</span>
+            <span class="text-emerald-400 font-bold transition-transform group-open:rotate-45 text-xl">+</span>
+          </summary>
+          <p class="text-sm text-slate-300 mt-4 leading-relaxed">
+            Tak, w 100%! LanUsb korzysta z otwartego standardu protokołu <strong>USB/IP</strong> (RFC Linux/Windows) oraz darmowych, oficjalnie podpisanych sterowników jądra Windows Open Source (usbipd-win oraz usbip-win2). Nie ma żadnych ukrytych opłat, licencji ani limitu urządzeń.
+          </p>
+        </details>
+
+        <!-- Q2 -->
+        <details class="group p-6 rounded-xl bg-brand-card border border-brand-border open:border-emerald-500/40 transition-colors">
+          <summary class="font-bold text-white cursor-pointer list-none flex items-center justify-between">
+            <span>Czy występuje opóźnienie (input lag) w grach i streamowaniu?</span>
+            <span class="text-emerald-400 font-bold transition-transform group-open:rotate-45 text-xl">+</span>
+          </summary>
+          <p class="text-sm text-slate-300 mt-4 leading-relaxed">
+            W domowej sieci lokalnej spiętej kablem Ethernet (1 Gbps) opóźnienie transmisji pakietów USB wynosi zazwyczaj <strong>poniżej 1 milisekundy</strong> (&lt;1 ms). Przyciski na Stream Decku, mikrofony i kamery reagują w czasie rzeczywistym.
+          </p>
+        </details>
+
+        <!-- Q3 -->
+        <details class="group p-6 rounded-xl bg-brand-card border border-brand-border open:border-emerald-500/40 transition-colors">
+          <summary class="font-bold text-white cursor-pointer list-none flex items-center justify-between">
+            <span>Dlaczego Klient nie widzi Serwera w sieci?</span>
+            <span class="text-emerald-400 font-bold transition-transform group-open:rotate-45 text-xl">+</span>
+          </summary>
+          <div class="text-sm text-slate-300 mt-4 space-y-2 leading-relaxed">
+            <p>Najczęstsze przyczyny to:</p>
+            <ol class="list-decimal list-inside space-y-1">
+              <li><strong>Profil sieci Windows:</strong> sieć na jednym z komputerów jest oznaczona jako <em>Publiczna</em> zamiast <em>Prywatna</em>.</li>
+              <li><strong>Zapora Windows:</strong> uruchom plik <code>Otworz-Porty-Firewall.bat</code> na obu komputerach.</li>
+              <li>Możesz również wpisać adres IP serwera ręcznie w polu <em>„Ręczne IP serwera”</em> w aplikacji LanUsb.Client.</li>
+            </ol>
+          </div>
+        </details>
+
+        <!-- Q4 -->
+        <details class="group p-6 rounded-xl bg-brand-card border border-brand-border open:border-emerald-500/40 transition-colors">
+          <summary class="font-bold text-white cursor-pointer list-none flex items-center justify-between">
+            <span>Jak działa funkcja Auto-Connect?</span>
+            <span class="text-emerald-400 font-bold transition-transform group-open:rotate-45 text-xl">+</span>
+          </summary>
+          <p class="text-sm text-slate-300 mt-4 leading-relaxed">
+            Wystarczy zaznaczyć urządzenie w LanUsb.Client i kliknąć przycisk <strong>⭐ Auto-łącz</strong>. Klient zapamiętuje unikalny identyfikator sprzętowy (VID:PID). Po ponownym uruchomieniu komputera lub wybudzeniu ze snu, LanUsb automatycznie odnajdzie serwer i zamontuje urządzenie USB w tle!
+          </p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="py-12 border-t border-brand-border/60 bg-brand-darkest text-xs text-slate-400">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-emerald-500 flex items-center justify-center text-slate-950 font-bold">⚡</div>
+        <div>
+          <span class="font-bold text-white text-sm">LanUsb Project</span>
+          <p class="text-[11px] text-slate-400">Darmowe udostępnianie USB przez sieć LAN dla twórców i graczy.</p>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-6 text-slate-300">
+        <a href="#network-requirement" class="hover:text-amber-300 transition-colors">Wymóg sieci prywatnej</a>
+        <a href="#comparison" class="hover:text-white transition-colors">VirtualHere vs LanUsb</a>
+        <a href="#download" class="hover:text-white transition-colors">Pobierz</a>
+        <a href="#donate" class="hover:text-amber-400 transition-colors">Wesprzyj autora ❤️</a>
+      </div>
+
+      <div class="text-center sm:text-right">
+        <span>Licencja MIT (Open Source).</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function copyShareLink() {
+      navigator.clipboard.writeText(window.location.href);
+      alert('Skopiowano link do strony LanUsb do schowka! Dziękujemy za polecenie projektu.');
+    }
+
+    function copyPaypal() {
+      navigator.clipboard.writeText('szefkacperek@gmail.com');
+      alert('Skopiowano adres e-mail PayPal (szefkacperek@gmail.com) do schowka!');
+    }
+  </script>
+</body>
+</html>
